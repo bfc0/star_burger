@@ -1,7 +1,10 @@
 import json
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.templatetags.static import static
 from django.db import transaction
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 
 from .models import Product, Order, OrderItem
@@ -59,8 +62,10 @@ def product_list_api(request):
     })
 
 
+@api_view(["POST"])
 def register_order(request):
-    order_data = json.loads(request.body.decode())
+    order_data = request.data
+    print(json.dumps(order_data, ensure_ascii=False, indent=4))
     with transaction.atomic():
 
         order = Order.objects.create(
@@ -79,4 +84,4 @@ def register_order(request):
                 quantity=orderitem["quantity"]
             )
 
-    return JsonResponse({})
+    return Response({"ok": "ok"},  status=status.HTTP_201_CREATED)

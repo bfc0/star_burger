@@ -1,0 +1,4 @@
+django-phonenumber-field==8.0.0
+phonenumberslite==8.13.40
+django-phonenumber-field==8.0.0
+phonenumberslite==8.13.40
