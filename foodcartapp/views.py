@@ -79,4 +79,4 @@ def register_order(request):
         }
         return Response(response, status=201)
 
-    return Response({"ok": "ok"},  status=400)
+    return Response({"not": "ok"},  status=400)
