@@ -8,7 +8,7 @@ from .models import ProductCategory
 from .models import Restaurant
 from .models import RestaurantMenuItem
 from .models import Order
-from .models import OrderLineSerializer
+from .models import OrderLine
 
 
 class RestaurantMenuItemInline(admin.TabularInline):
@@ -109,7 +109,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class OrderLineInline(admin.TabularInline):
-    model = OrderLineSerializer
+    model = OrderLine
 
 
 @admin.register(Order)

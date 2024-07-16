@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 from phonenumbers import parse, is_valid_number, NumberParseException
 
 
-from .models import Product, Order, OrderLineSerializer
+from .models import Product, Order, OrderLine
 from .serializers import OrderSerializer
 
 
@@ -70,25 +70,13 @@ def register_order(request):
     print(json.dumps(order_data, ensure_ascii=False, indent=4))
 
     serializer = OrderSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
+    if serializer.is_valid(raise_exception=True):
+        with transaction.atomic():
+            order = serializer.save()
+        response = {
+            "id": order.id,
+            **serializer.data
+        }
+        return Response(response, status=201)
 
-    with transaction.atomic():
-        pass
-
-        # order = Order.objects.create(
-        #     firstname=order_data["firstname"],
-        #     lastname=order_data["lastname"],
-        #     phonenumber=order_data["phonenumber"],
-        #     address=order_data["address"]
-        # )
-
-        # for orderitem in order_data["products"]:
-        #     product = Product.objects.get(id=orderitem["product"])
-        #     OrderItem.objects.create(
-        #         order=order,
-        #         product=product,
-        #         price=product.price,
-        #         quantity=orderitem["quantity"]
-        #     )
-
-    return Response({"ok": "ok"},  status=status.HTTP_201_CREATED)
+    return Response({"ok": "ok"},  status=400)

@@ -143,7 +143,7 @@ class Order(models.Model):
         return f"Заказ {self.id}"
 
 
-class OrderLineSerializer(models.Model):
+class OrderLine(models.Model):
     order = models.ForeignKey(
         Order, related_name="orderlines", on_delete=models.CASCADE)
     product = models.ForeignKey(
