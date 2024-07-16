@@ -143,11 +143,11 @@ class Order(models.Model):
         return f"Заказ {self.id}"
 
 
-class OrderItem(models.Model):
+class OrderLineSerializer(models.Model):
     order = models.ForeignKey(
-        Order, related_name="items", on_delete=models.CASCADE)
+        Order, related_name="orderlines", on_delete=models.CASCADE)
     product = models.ForeignKey(
-        Product, related_name="items", on_delete=models.CASCADE, verbose_name="товар")
+        Product, related_name="orderlines", on_delete=models.CASCADE, verbose_name="товар")
     price = models.DecimalField("цена",
                                 max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     quantity = models.PositiveIntegerField("количество",

@@ -5,9 +5,11 @@ from django.db import transaction
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from phonenumbers import parse, is_valid_number, NumberParseException
 
 
-from .models import Product, Order, OrderItem
+from .models import Product, Order, OrderLineSerializer
+from .serializers import OrderSerializer
 
 
 def banners_list_api(request):
@@ -66,22 +68,27 @@ def product_list_api(request):
 def register_order(request):
     order_data = request.data
     print(json.dumps(order_data, ensure_ascii=False, indent=4))
+
+    serializer = OrderSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
     with transaction.atomic():
+        pass
 
-        order = Order.objects.create(
-            firstname=order_data["firstname"],
-            lastname=order_data["lastname"],
-            phonenumber=order_data["phonenumber"],
-            address=order_data["address"]
-        )
+        # order = Order.objects.create(
+        #     firstname=order_data["firstname"],
+        #     lastname=order_data["lastname"],
+        #     phonenumber=order_data["phonenumber"],
+        #     address=order_data["address"]
+        # )
 
-        for orderitem in order_data["products"]:
-            product = Product.objects.get(id=orderitem["product"])
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                price=product.price,
-                quantity=orderitem["quantity"]
-            )
+        # for orderitem in order_data["products"]:
+        #     product = Product.objects.get(id=orderitem["product"])
+        #     OrderItem.objects.create(
+        #         order=order,
+        #         product=product,
+        #         price=product.price,
+        #         quantity=orderitem["quantity"]
+        #     )
 
     return Response({"ok": "ok"},  status=status.HTTP_201_CREATED)

@@ -8,7 +8,7 @@ from .models import ProductCategory
 from .models import Restaurant
 from .models import RestaurantMenuItem
 from .models import Order
-from .models import OrderItem
+from .models import OrderLineSerializer
 
 
 class RestaurantMenuItemInline(admin.TabularInline):
@@ -108,12 +108,12 @@ class ProductAdmin(admin.ModelAdmin):
     pass
 
 
-class OrderItemInline(admin.TabularInline):
-    model = OrderItem
+class OrderLineInline(admin.TabularInline):
+    model = OrderLineSerializer
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    inlines = [OrderItemInline]
+    inlines = [OrderLineInline]
     list_display = ["created", "address",
                     "firstname", "lastname", "phonenumber"]
