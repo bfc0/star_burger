@@ -1,9 +1,10 @@
 import json
 from django.http import JsonResponse
 from django.templatetags.static import static
+from django.db import transaction
 
 
-from .models import Product
+from .models import Product, Order, OrderItem
 
 
 def banners_list_api(request):
@@ -59,6 +60,23 @@ def product_list_api(request):
 
 
 def register_order(request):
-    order = json.loads(request.body.decode())
-    print(order)
+    order_data = json.loads(request.body.decode())
+    with transaction.atomic():
+
+        order = Order.objects.create(
+            firstname=order_data["firstname"],
+            lastname=order_data["lastname"],
+            phonenumber=order_data["phonenumber"],
+            address=order_data["address"]
+        )
+
+        for orderitem in order_data["products"]:
+            product = Product.objects.get(id=orderitem["product"])
+            OrderItem.objects.create(
+                order=order,
+                product=product,
+                price=product.price,
+                quantity=orderitem["quantity"]
+            )
+
     return JsonResponse({})
