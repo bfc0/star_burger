@@ -97,8 +97,8 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    serializer = OrderSerializer(Order.objects.exclude(
-        status=3).order_by("-created"), many=True)
+    orders = Order.objects.exclude(status=3).order_by("-created")
+
     return render(request, template_name='order_items.html', context={
-        "order_items": serializer.data
+        "order_items": orders
     })
