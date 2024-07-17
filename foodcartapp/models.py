@@ -134,6 +134,13 @@ class OrderManager(models.Manager):
 
 
 class Order(models.Model):
+    STATUSES = [
+        (0, 'новый'),
+        (1, 'готовится'),
+        (2, 'доставляется'),
+        (3, 'исполнен'),
+    ]
+
     firstname = models.CharField("имя", max_length=50)
     lastname = models.CharField("фамилия", max_length=50)
     phonenumber = PhoneNumberField(
@@ -141,6 +148,8 @@ class Order(models.Model):
     address = models.CharField("адрес доставки", max_length=200)
     created = models.DateTimeField("создан", auto_now_add=True, db_index=True)
     updated = models.DateTimeField("изменен", auto_now=True)
+    status = models.IntegerField(
+        'Статус', choices=STATUSES, default=0, db_index=True)
 
     objects = OrderManager()
 
@@ -163,5 +172,8 @@ class OrderLine(models.Model):
     quantity = models.PositiveIntegerField("количество",
                                            default=1, validators=[MinValueValidator(1)])
 
+    class Meta:
+        unique_together = ["order", "product"]
+
     def __str__(self):
-        return f"OrderItem {self.id}"
+        return f"Товар {self.id}"
