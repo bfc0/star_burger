@@ -66,17 +66,9 @@ def product_list_api(request):
 
 @api_view(["POST"])
 def register_order(request):
-    order_data = request.data
-    print(json.dumps(order_data, ensure_ascii=False, indent=4))
 
     serializer = OrderSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         with transaction.atomic():
-            order = serializer.save()
-        response = {
-            "id": order.id,
-            **serializer.data
-        }
-        return Response(response, status=201)
-
-    return Response({"not": "ok"},  status=400)
+            serializer.save()
+        return Response(serializer.data, status=201)

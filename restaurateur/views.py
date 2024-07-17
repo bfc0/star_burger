@@ -4,12 +4,14 @@ from django.views import View
 from django.urls import reverse_lazy
 from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import user_passes_test
+from django.db.models import Sum
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
 
 from foodcartapp.models import Order, Product, Restaurant
+from foodcartapp.serializers import OrderSerializer
 
 
 class Login(forms.Form):
@@ -95,7 +97,7 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = [model_to_dict(order) for order in Order.objects.all()]
+    serializer = OrderSerializer(Order.objects.order_by("-created"), many=True)
     return render(request, template_name='order_items.html', context={
-        "order_items": orders
+        "order_items": serializer.data
     })

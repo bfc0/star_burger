@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ReadOnlyField
 from django.db import transaction
 from .models import Order, OrderLine, Product
 
@@ -12,11 +12,13 @@ class OrderLineSerializer(ModelSerializer):
 class OrderSerializer(ModelSerializer):
     products = OrderLineSerializer(
         many=True, allow_empty=False, source="orderlines", write_only=True)
+    total = ReadOnlyField()
+    id = ReadOnlyField()
 
     class Meta:
         model = Order
-        fields = ["firstname", "lastname",
-                  "phonenumber", "address", "products"]
+        fields = ["id", "firstname", "lastname",
+                  "phonenumber", "address", "products", "total"]
 
     def create(self, validated_data):
         orderlines = validated_data.pop("orderlines")
