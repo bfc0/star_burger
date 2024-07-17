@@ -1,5 +1,6 @@
 from django.contrib import admin
-from django.shortcuts import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.shortcuts import redirect, reverse
 from django.templatetags.static import static
 from django.utils.html import format_html
 
@@ -110,10 +111,20 @@ class ProductAdmin(admin.ModelAdmin):
 
 class OrderLineInline(admin.TabularInline):
     model = OrderLine
+    extra = 0
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderLineInline]
-    list_display = ["created", "address",
+    list_display = ["created",  "address",
                     "firstname", "lastname", "phonenumber"]
+
+    def response_post_save_change(self, request, obj):
+        res = super().response_post_save_change(request, obj)
+        next_url = request.GET.get('next')
+        if url_has_allowed_host_and_scheme(next_url,
+                                           allowed_hosts=request.get_host()):
+            return redirect(next_url)
+        else:
+            return res
