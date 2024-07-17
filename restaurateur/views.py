@@ -4,13 +4,13 @@ from django.views import View
 from django.urls import reverse_lazy
 from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import user_passes_test
-from django.db.models import Sum
+from django.db.models import Prefetch
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
 
-from foodcartapp.models import Order, Product, Restaurant
+from foodcartapp.models import Order, Product, Restaurant, RestaurantMenuItem
 from foodcartapp.serializers import OrderSerializer
 
 
@@ -97,7 +97,27 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = Order.objects.exclude(status=3).order_by("-created")
+
+    restaurants = Restaurant.objects.prefetch_related(
+        Prefetch('menu_items', queryset=RestaurantMenuItem.objects.filter(
+            availability=True).select_related("product"))
+    ).all()
+
+    availability = {r: {item.product.id for item in r.menu_items.all()}
+                    for r in restaurants}
+
+    orders = Order.objects.exclude(
+        status=3).order_by("status", "-created").prefetch_related('orderlines__product')
+
+    for order in orders:
+
+        products_required = {
+            line.product.id for line in order.orderlines.all()}
+        restaurants_can_handle = [
+            str(restaurant) for restaurant, r_products in availability.items()
+            if not products_required - r_products
+        ]
+        order.available_restaurants = ", ".join(restaurants_can_handle)
 
     return render(request, template_name='order_items.html', context={
         "order_items": orders

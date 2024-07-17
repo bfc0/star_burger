@@ -120,6 +120,11 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ["created",  "address",
                     "firstname", "lastname", "phonenumber"]
 
+    def save_model(self, request, obj, form, change):
+        if obj.assigned_restaurant and obj.status == 0:
+            obj.status = 1
+        super().save_model(request, obj, form, change)
+
     def response_post_save_change(self, request, obj):
         res = super().response_post_save_change(request, obj)
         next_url = request.GET.get('next')

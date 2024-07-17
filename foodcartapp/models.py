@@ -162,11 +162,14 @@ class Order(models.Model):
     comment = models.TextField("комментарий", blank=True)
     payment_method = models.IntegerField(
         "оплата", choices=METHODS, default=0, db_index=True)
+    assigned_restaurant = models.ForeignKey(
+        Restaurant, related_name='orders', verbose_name="ресторан",
+        null=True, blank=True, on_delete=models.SET_NULL)
 
     objects = OrderManager()
 
     class Meta:
-        ordering = ("-created",)
+        ordering = ("status", "-created",)
         verbose_name = "Заказ"
         verbose_name_plural = "Заказы"
 
