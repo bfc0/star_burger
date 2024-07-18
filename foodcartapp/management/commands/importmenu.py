@@ -25,8 +25,6 @@ class Command(BaseCommand):
                 with open(products_file, "r") as file:
                     serialized_products = json.load(file)
 
-                pprint.pprint(serialized_products)
-
                 for product in serialized_products:
 
                     img_filename = dirname + "media/" + product["img"]

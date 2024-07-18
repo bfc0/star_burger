@@ -46,8 +46,6 @@ class CoordinateService:
                 )
                 self.coords_cache[address] = coords
 
-        print(self.coords_cache)
-
     def get_distance(self, addr_from: str, addr_to: str) -> int | None:
         coords_from = self.coords_cache.get(addr_from)
         coords_to = self.coords_cache.get(addr_to)
