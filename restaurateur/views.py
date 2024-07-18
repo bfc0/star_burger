@@ -1,4 +1,5 @@
 from django import forms
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views import View
 from django.urls import reverse_lazy
@@ -101,16 +102,16 @@ def view_orders(request):
     restaurants = Restaurant.objects.prefetch_related(
         Prefetch('menu_items', queryset=RestaurantMenuItem.objects.filter(
             availability=True).select_related("product"))
-    ).all()
+    )
 
     availability = {r: {item.product.id for item in r.menu_items.all()}
                     for r in restaurants}
 
     orders = Order.objects.exclude(
-        status=3).order_by("status", "-created").prefetch_related('orderlines__product')
+        status=3).order_by("status", "-created")\
+        .prefetch_related("orderlines__product").select_related("assigned_restaurant")
 
     for order in orders:
-
         products_required = {
             line.product.id for line in order.orderlines.all()}
         restaurants_can_handle = [

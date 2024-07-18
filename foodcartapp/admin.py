@@ -127,7 +127,7 @@ class OrderAdmin(admin.ModelAdmin):
 
     def response_post_save_change(self, request, obj):
         res = super().response_post_save_change(request, obj)
-        next_url = request.GET.get('next')
+        next_url = request.GET.get("next")
         if url_has_allowed_host_and_scheme(next_url,
                                            allowed_hosts=request.get_host()):
             return redirect(next_url)
