@@ -135,6 +135,11 @@ class OrderManager(models.Manager):
 
 
 class Order(models.Model):
+    STATUS_NEW = 0
+    STATUS_PREPARING = 1
+    STATUS_DELIVERING = 2
+    STATUS_COMPLETED = 3
+
     STATUSES = [
         (0, 'новый'),
         (1, 'готовится'),

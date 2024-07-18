@@ -1,18 +1,15 @@
 from django import forms
-from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views import View
 from django.urls import reverse_lazy
-from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Prefetch
-
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
-
+from locations.service import CoordinateService
 from foodcartapp.models import Order, Product, Restaurant, RestaurantMenuItem
-from foodcartapp.serializers import OrderSerializer
+from restaurateur.service import get_restaraunts_can_handle_order
 
 
 class Login(forms.Form):
@@ -108,16 +105,25 @@ def view_orders(request):
                     for r in restaurants}
 
     orders = Order.objects.exclude(
-        status=3).order_by("status", "-created")\
+        status=Order.STATUS_COMPLETED).order_by("status", "-created")\
         .prefetch_related("orderlines__product").select_related("assigned_restaurant")
+
+    all_addresses = set(orders.values_list("address", flat=True))\
+        | set(restaurants.values_list("address", flat=True))
+    coordservice = CoordinateService(all_addresses)
 
     for order in orders:
         products_required = {
             line.product.id for line in order.orderlines.all()}
+
+        restaurants_can_handle = get_restaraunts_can_handle_order(
+            availability, products_required, coordservice, order)
+
         restaurants_can_handle = [
-            str(restaurant) for restaurant, r_products in availability.items()
-            if not products_required - r_products
+            f"{name} {distance}км" if distance is not None else str(name)
+            for name, distance in restaurants_can_handle
         ]
+
         order.available_restaurants = ", ".join(restaurants_can_handle)
 
     return render(request, template_name='order_items.html', context={
