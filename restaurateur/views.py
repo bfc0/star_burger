@@ -107,7 +107,7 @@ def view_orders(request):
 
     orders = Order.objects.exclude(
         status=Order.STATUS_COMPLETED).order_by("status", "-created")\
-        .prefetch_related("orderlines__product").select_related("assigned_restaurant").all()
+        .prefetch_related("orderlines__product").select_related("assigned_restaurant")
 
     order_addresses = {order.address for order in orders}
     restaurant_addresses = {r.address for r in restaurants}
@@ -121,13 +121,12 @@ def view_orders(request):
         restaurants_can_handle = get_restaraunts_can_handle_order(
             availability, products_required, coordservice, order)
 
-        restaurants_can_handle = [
+        order.available_restaurants = [
             {
                 "name": f"{name} {distance}km" if distance is not None else str(name),
                 "id": restaurant_id,
             } for restaurant_id, name, distance in restaurants_can_handle
         ]
-        order.available_restaurants = restaurants_can_handle
 
     return render(request, template_name='order_items.html', context={
         "order_items": orders
