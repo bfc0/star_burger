@@ -41,7 +41,11 @@
         {% else %}
         <details>
           <summary>Доступны:</summary>
-          {{item.available_restaurants}}
+          <ul>
+            {% for restaurant in item.available_restaurants %}
+            <li>{{restaurant.name}}</li>
+            {% endfor %}
+          </ul>
         </details>
         {% endif %}
       </td>

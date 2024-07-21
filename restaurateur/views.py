@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Prefetch
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
+from django.db import connection, reset_queries
 
 from locations.service import CoordinateService
 from foodcartapp.models import Order, Product, Restaurant, RestaurantMenuItem
@@ -106,10 +107,11 @@ def view_orders(request):
 
     orders = Order.objects.exclude(
         status=Order.STATUS_COMPLETED).order_by("status", "-created")\
-        .prefetch_related("orderlines__product").select_related("assigned_restaurant")
+        .prefetch_related("orderlines__product").select_related("assigned_restaurant").all()
 
-    all_addresses = set(orders.values_list("address", flat=True))\
-        | set(restaurants.values_list("address", flat=True))
+    order_addresses = {order.address for order in orders}
+    restaurant_addresses = {r.address for r in restaurants}
+    all_addresses = order_addresses | restaurant_addresses
     coordservice = CoordinateService(all_addresses)
 
     for order in orders:
@@ -120,11 +122,12 @@ def view_orders(request):
             availability, products_required, coordservice, order)
 
         restaurants_can_handle = [
-            f"{name} {distance}км" if distance is not None else str(name)
-            for name, distance in restaurants_can_handle
+            {
+                "name": f"{name} {distance}km" if distance is not None else str(name),
+                "id": restaurant_id,
+            } for restaurant_id, name, distance in restaurants_can_handle
         ]
-
-        order.available_restaurants = ", ".join(restaurants_can_handle)
+        order.available_restaurants = restaurants_can_handle
 
     return render(request, template_name='order_items.html', context={
         "order_items": orders
