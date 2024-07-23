@@ -22,12 +22,12 @@ class OrderSerializer(ModelSerializer):
         fields = ("id", "firstname", "lastname",
                   "phonenumber", "address", "products", "total", "status", "status_name")
 
+    @transaction.atomic
     def create(self, validated_data):
         orderlines = validated_data.pop("orderlines")
-        with transaction.atomic():
-            order = Order.objects.create(**validated_data)
-            for orderline in orderlines:
-                product = Product.objects.get(id=orderline["product"].id)
-                OrderLine.objects.create(
-                    order=order, price=product.price, **orderline)
-            return order
+        order = Order.objects.create(**validated_data)
+        for orderline in orderlines:
+            product = Product.objects.get(id=orderline["product"].id)
+            OrderLine.objects.create(
+                order=order, price=product.price, **orderline)
+        return order

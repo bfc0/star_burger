@@ -66,9 +66,8 @@ def product_list_api(request):
 
 @api_view(["POST"])
 def register_order(request):
-
     serializer = OrderSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        with transaction.atomic():
-            serializer.save()
-        return Response(serializer.data, status=201)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+
+    return Response(serializer.data, status=201)
