@@ -1,4 +1,5 @@
 import os
+import rollbar
 
 import dj_database_url
 
@@ -43,6 +44,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+if ROLLBAR_KEY := env("ROLLBAR_KEY"):
+    MIDDLEWARE += ['rollbar.contrib.django.middleware.RollbarNotifierMiddleware',]
+    ROLLBAR = {
+        'access_token': ROLLBAR_KEY,
+        'environment': env('ROLLBAR_ENVIRONMENT', 'production'),
+        'code_version': '1.0',
+        'root': BASE_DIR,
+    }
 
 ROOT_URLCONF = 'star_burger.urls'
 

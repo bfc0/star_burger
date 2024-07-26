@@ -131,3 +131,7 @@ def view_orders(request):
     return render(request, template_name='order_items.html', context={
         "order_items": orders
     })
+
+
+def crashing_view(request):
+    raise
