@@ -45,7 +45,7 @@ MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
-if ROLLBAR_KEY := env("ROLLBAR_KEY"):
+if ROLLBAR_KEY := env("ROLLBAR_KEY", ""):
     MIDDLEWARE += [
         "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
     ]
