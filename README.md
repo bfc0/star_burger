@@ -154,9 +154,13 @@ Parcel будет следить за файлами в каталоге `bundle
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
 - `YANDEX_KEY` — ключ для сервиса геолокции. [взять тут](https://developer.tech.yandex.ru/).
 - `ROLLBAR_KEY` - ключ от сервиса [Rollbar](rollbar.com)
-- `ENVIRONMENT` - значение окружения для роллбара. Поставьте production
+- `ENVIRONMENT` - значение окружения. Поставьте production
 - `DATABASE_URL` - postgresql://login:password@/database?host=/tmp - URL вашей базы постгрес, 
 login password - ваши логин и пароль, database - имя базы данных, host=/tmp - адрес domain сокета
+
+### Запустить деплой при обновлении:
+
+``` ./deploy_burger.sh```
 
 ## Цели проекта
 
