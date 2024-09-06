@@ -3,6 +3,7 @@ version: "3.9"
 services:
 
   backend:
+    container_name: sb_backend
     depends_on:
       frontend-build:
         condition: service_completed_successfully

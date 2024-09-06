@@ -3,7 +3,6 @@ version: "3.9"
 services:
 
   backend:
-    container_name: sb_backend
     depends_on:
       - postgres
     build:
