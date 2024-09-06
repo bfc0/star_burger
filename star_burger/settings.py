@@ -100,8 +100,8 @@ POSTGRES_USER = env("POSTGRES_USER")
 POSTGRES_PASSWORD = env("POSTGRES_PASSWORD")
 POSTGRES_DB = env("POSTGRES_DB")
 
-DATABASE_URL = f"postgresql://{POSTGRES_USER}:{
-    POSTGRES_PASSWORD}@postgres:5432/{POSTGRES_DB}"
+DATABASE_URL = f"postgresql://{POSTGRES_USER}:\
+    {POSTGRES_PASSWORD}@postgres:5432/{POSTGRES_DB}"
 DATABASES = {
     "default": dj_database_url.config(default=DATABASE_URL)
 }
