@@ -27,7 +27,7 @@ class Command(BaseCommand):
 
                 for product in serialized_products:
 
-                    img_filename = dirname + "media/" + product["img"]
+                    img_filename = dirname + "mediaf/" + product["img"]
                     with open(img_filename, "rb") as f:
                         img_content = f.read()
 
