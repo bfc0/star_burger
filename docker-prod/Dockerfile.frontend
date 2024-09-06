@@ -1,0 +1,6 @@
+FROM node:16.16 as build
+WORKDIR /app
+
+COPY package*.json .
+
+CMD ["sh", "-c", "npm ci && ./node_modules/.bin/parcel build bundles-src/index.js --dist-dir bundles --public-url=./"]

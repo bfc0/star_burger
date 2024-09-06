@@ -1,0 +1,9 @@
+FROM node:16.16-alpine
+
+WORKDIR /app
+
+COPY package*.json .
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "npm ci --dev && ./node_modules/.bin/parcel watch bundles-src/index.js --dist-dir bundles --public-url=./"]

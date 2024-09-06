@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+
+  backend:
+    depends_on:
+      - postgres
+      - frontend-build
+    build:
+      dockerfile: docker-prod/Dockerfile.backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ${PWD}:/app
+
+
+
+  frontend-build:
+    build:
+      dockerfile: docker-prod/Dockerfile.frontend
+    volumes:
+      - ./bundles:/app/bundles
+      - ./bundles-src:/app/bundles-src
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - /opt/pgdata:/var/lib/postgresql/data
