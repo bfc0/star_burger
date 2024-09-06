@@ -1,7 +1,6 @@
 import os
 import rollbar
 
-import dj_database_url
 
 from environs import Env
 
@@ -100,11 +99,7 @@ POSTGRES_USER = env("POSTGRES_USER")
 POSTGRES_PASSWORD = env("POSTGRES_PASSWORD")
 POSTGRES_DB = env("POSTGRES_DB")
 
-# DATABASE_URL = f"postgresql://{POSTGRES_USER}:\
-#     {POSTGRES_PASSWORD}@postgres:5432/{POSTGRES_DB}"
-# DATABASES = {
-#     "default": dj_database_url.config(default=DATABASE_URL)
-# }
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -150,3 +145,5 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
     os.path.join(BASE_DIR, "bundles"),
 ]
+if DEBUG:
+    STATICFILES_DIRS.append(os.path.join(BASE_DIR, "bundles"))
