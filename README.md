@@ -30,8 +30,18 @@
 
 ## Как запустить dev-версию сайта
 
+Запустить докер
 ```
 docker compose up -d
+```
+
+Запустить миграции
+```
+docker exec -it sb_backend sh -c "python manage.py migrate"  
+```
+Импортировать меню
+```
+docker exec -it sb_backend sh -c "python manage.py importmenu star-burger-products/"  
 ```
 
 ## Как запустить prod-версию
