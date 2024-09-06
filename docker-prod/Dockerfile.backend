@@ -5,7 +5,7 @@ WORKDIR /app
 COPY . .
 
 RUN pip install --prefer-binary -r requirements.txt
-RUN python manage.py importmenu star-burger-products
+# RUN python manage.py importmenu star-burger-products
 EXPOSE 8000
 
 CMD ["sh","-c", "python manage.py collectstatic --noinput && gunicorn -b 0.0.0.0:8000 star_burger.wsgi:application"]
