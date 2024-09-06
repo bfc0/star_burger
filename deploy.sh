@@ -14,7 +14,7 @@ git pull
 
 docker compose -f docker-prod.yml up -d
 
-docker exec -it sb_backend sh -c "python manage.py collectstatic"
+docker exec -it sb_backend sh -c "python manage.py collectstatic --noinput"
 docker exec -it sb_backend sh -c "python manage.py migrate"
 
 echo "done"
