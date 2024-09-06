@@ -1,6 +1,7 @@
 services:
 
   backend:
+    container_name: sb_backend
     depends_on:
       - postgres
     build:
@@ -11,6 +12,7 @@ services:
       - ${PWD}:/app
 
   frontend:
+    container_name: sb_frontend
     depends_on:
       - postgres
     build:
