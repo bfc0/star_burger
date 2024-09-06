@@ -4,15 +4,18 @@ services:
 
   backend:
     depends_on:
-      - postgres
-      - frontend-build
+      frontend-build:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_started
+
+
     build:
       dockerfile: docker-prod/Dockerfile.backend
     ports:
       - "8000:8000"
     volumes:
       - ${PWD}:/app
-
 
 
   frontend-build:
