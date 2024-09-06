@@ -100,10 +100,20 @@ POSTGRES_USER = env("POSTGRES_USER")
 POSTGRES_PASSWORD = env("POSTGRES_PASSWORD")
 POSTGRES_DB = env("POSTGRES_DB")
 
-DATABASE_URL = f"postgresql://{POSTGRES_USER}:\
-    {POSTGRES_PASSWORD}@postgres:5432/{POSTGRES_DB}"
+# DATABASE_URL = f"postgresql://{POSTGRES_USER}:\
+#     {POSTGRES_PASSWORD}@postgres:5432/{POSTGRES_DB}"
+# DATABASES = {
+#     "default": dj_database_url.config(default=DATABASE_URL)
+# }
 DATABASES = {
-    "default": dj_database_url.config(default=DATABASE_URL)
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": POSTGRES_DB,
+        "USER": POSTGRES_USER,
+        "PASSWORD": POSTGRES_PASSWORD,
+        "HOST": "postgres",
+        "PORT": 5432,
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
