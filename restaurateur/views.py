@@ -105,9 +105,12 @@ def view_orders(request):
     availability = {r: {item.product.id for item in r.menu_items.all()}
                     for r in restaurants}
 
-    orders = Order.objects.exclude(
-        status=Order.STATUS_COMPLETED).order_by("status", "-created")\
-        .prefetch_related("orderlines__product").select_related("assigned_restaurant")
+    orders = (
+        Order.objects.exclude(status=Order.STATUS_COMPLETED)
+        .order_by("status", "-created")
+        .prefetch_related("orderlines__product")
+        .select_related("assigned_restaurant")
+    )
 
     order_addresses = {order.address for order in orders}
     restaurant_addresses = {r.address for r in restaurants}
